@@ -1,19 +1,20 @@
-import { CtpApiRoot } from '@/utils/CommerceTools/ctpApiRoot';
-import { Button, Text } from '@chakra-ui/react';
+import { CtpApiRoot } from '../utils/CommerceTools/CtpApiRoot';
+import { Box, Button, Text } from '@chakra-ui/react';
 import Head from 'next/head';
+import { ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import ProductList from '@/components/product/ProductList';
 
 const getProducts = () => {
   return CtpApiRoot.products().get().execute();
 };
 
-export default function Home() {
-  const submitGetProd = async () => {
-    try {
-      const products = await getProducts();
-      console.log(products);
-    } catch (error) {
-      console.log(error);
-    }
+type Props = {
+  data: ProductPagedQueryResponse;
+};
+
+export default function Home({ data }: Props) {
+  const logServerSideProducts = () => {
+    console.log(data);
   };
 
   return (
@@ -24,8 +25,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Text>Hello World</Text>
-      <Button onClick={submitGetProd}>get products</Button>
+      <Box maxWidth={'1320px'} mx={'auto'}>
+        <Button onClick={logServerSideProducts}>Log server products</Button>
+
+        <ProductList data={data} />
+      </Box>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const products = await getProducts();
+
+  return { props: { data: products.body } };
 }
