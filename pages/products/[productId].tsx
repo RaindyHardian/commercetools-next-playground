@@ -1,3 +1,4 @@
+import ProductDetail from '@/components/product/ProductDetail';
 import { CtpApiRoot } from '@/utils/CommerceTools/CtpApiRoot';
 import { Box, Button } from '@chakra-ui/react';
 import { Product } from '@commercetools/platform-sdk';
@@ -27,6 +28,7 @@ const ProductDetailPage = ({ data }: Props) => {
       </Head>
       <Box maxWidth={'1320px'} mx={'auto'}>
         <Button onClick={logServerSideProduct}>Log server product</Button>
+        <ProductDetail product={data} />
       </Box>
     </>
   );

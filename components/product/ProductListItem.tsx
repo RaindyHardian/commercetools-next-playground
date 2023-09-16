@@ -1,6 +1,6 @@
 import { displayAmount } from '@/utils/common';
 import { CURRENCY_CODE, LANGUAGE } from '@/utils/constants';
-import { Flex, Link, Img, Text } from '@chakra-ui/react';
+import { Flex, Link, Image, Text } from '@chakra-ui/react';
 import { Product } from '@commercetools/platform-sdk';
 import NextLink from 'next/link';
 import React from 'react';
@@ -28,8 +28,9 @@ const ProductListItem = ({ product }: Props) => {
     >
       <Flex>
         <Link as={NextLink} href={detailPageUrl}>
-          <Img
+          <Image
             src={imageUrl}
+            alt={productName}
             objectFit={'cover'}
             objectPosition={'center center'}
             width={'100%'}
@@ -45,6 +46,7 @@ const ProductListItem = ({ product }: Props) => {
           _hover={{}}
           display={'flex'}
           flexDir={'column'}
+          width="100%"
           textAlign={'left'}
         >
           <Text
