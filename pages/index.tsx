@@ -1,11 +1,35 @@
-import { CtpApiRoot } from '../utils/CommerceTools/CtpApiRoot';
-import { Box, Button, Text } from '@chakra-ui/react';
+import {
+  CtpAnonymousApiRoot,
+  CtpApiRoot,
+  CtpPasswordFlowApiRoot,
+} from '../utils/CommerceTools/CtpApiRoot';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import Head from 'next/head';
 import { ProductPagedQueryResponse } from '@commercetools/platform-sdk';
 import ProductList from '@/components/product/ProductList';
 
 const getProducts = () => {
   return CtpApiRoot.products().get().execute();
+};
+
+const mockLogin = ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  return CtpAnonymousApiRoot.me()
+    .login()
+    .post({
+      body: {
+        email,
+        password,
+        updateProductData: true,
+        activeCartSignInMode: 'MergeWithExistingCustomerCart',
+      },
+    })
+    .execute();
 };
 
 type Props = {
@@ -17,6 +41,68 @@ export default function Home({ data }: Props) {
     console.log(data);
   };
 
+  const fetchProducts = async () => {
+    try {
+      const response = await CtpAnonymousApiRoot.products().get().execute();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchAnonymousProfile = async () => {
+    try {
+      const response = await CtpAnonymousApiRoot.me().get().execute();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMockLogin = async () => {
+    try {
+      const response = await mockLogin({
+        email: 'raindy.dev@gmail.com',
+        password: 'Dev@1234',
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchProductsPass = async () => {
+    try {
+      const response = await CtpAnonymousApiRoot.products().get().execute();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMockLoginPass = async () => {
+    try {
+      const response = await CtpPasswordFlowApiRoot({
+        username: 'raindy.dev@gmail.com',
+        password: 'Dev@1234',
+      })
+        .me()
+        .login()
+        .post({
+          body: {
+            email: 'raindy.dev@gmail.com',
+            password: 'Dev@1234',
+            updateProductData: true,
+            activeCartSignInMode: 'MergeWithExistingCustomerCart',
+          },
+        })
+        .execute();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -26,7 +112,25 @@ export default function Home({ data }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Box maxWidth={'1320px'} mx={'auto'}>
-        <Button onClick={logServerSideProducts}>Log server products</Button>
+        <Flex flexWrap={'wrap'} gap="10px">
+          {/* <Button onClick={logServerSideProducts}>Log server products</Button> */}
+          <Button onClick={fetchProducts}>
+            fetch products on browser using anonymous flow
+          </Button>
+          <Button onClick={handleMockLogin}>
+            perform mock login using anonymous flow
+          </Button>
+          <Button onClick={fetchAnonymousProfile}>
+            fetch logged in profile using anonymous flow
+          </Button>
+
+          <Button onClick={fetchProductsPass}>
+            fetch products password flow
+          </Button>
+          <Button onClick={handleMockLoginPass}>
+            mock login using password flow
+          </Button>
+        </Flex>
 
         <ProductList data={data} />
       </Box>
